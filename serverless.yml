@@ -1,0 +1,51 @@
+org: dotuanson
+app: aws-emandai-va-golang
+service: serverless
+frameworkVersion: '3'
+provider:
+  name: aws
+  runtime: go1.x
+  stage: ${opt:stage}
+  region: ap-southeast-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 'athena:*'
+          Resource: '*'
+        - Effect: Allow
+          Action: 's3:*'
+          Resource:
+            - 'arn:aws:s3:::*'
+        - Effect: Allow
+          Action: 'glue:*'
+          Resource: '*'
+
+package:
+  patterns:
+    - '!./**'
+    - ./bin/**
+
+functions:
+  sttReport:
+    handler: bin/stt
+    description: Cronjob for exporting reports STT
+    logRetentionInDays: 7
+    timeout: 60
+    memorySize: 256
+    maximumRetryAttempts: 1
+    tags:
+      product: va
+    events:
+      - schedule: cron(10 14 * * ? *)
+#  ttsReport:
+#    handler: bin/tts
+#    description: Cronjob for exporting reports TTS
+#    logRetentionInDays: 7
+#    timeout: 60
+#    memorySize: 256
+#    maximumRetryAttempts: 0
+#    tags:
+#      product: va
+#    events:
+#      - schedule: rate(5 minutes)

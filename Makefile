@@ -5,7 +5,7 @@ build:
 	#env GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -o bin/tts tts/main.go
 
 clean:
-	rm -rf ./bin
+	rm -rf ./bin/
 
 remove_dev:
 	sls remove --stage dev
